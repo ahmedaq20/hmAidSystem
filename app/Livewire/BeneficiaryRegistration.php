@@ -88,6 +88,9 @@ class BeneficiaryRegistration extends Component
                 'icon' => 'success',
             ]);
 
+                // إرسال حدث للأب لإغلاق المودال
+             $this->dispatch('beneficiarySaved');
+
             $this->reset(['national_id', 'full_name', 'phone_number', 'family_members', 'address', 'martyrs_count', 'injured_count', 'disabled_count']);
 
         } catch (\Throwable $e) {

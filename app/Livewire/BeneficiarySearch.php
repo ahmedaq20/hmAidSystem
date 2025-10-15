@@ -9,10 +9,24 @@ use Livewire\Attributes\Layout;
 #[Layout('components.layouts.app')]
 class BeneficiarySearch extends Component
 {
- public $nationalId = '';
+    public $nationalId = '';
     public $beneficiary = null;
     public $showRegistration = false;
     public $isLoading = false;
+
+
+
+    protected $listeners = ['beneficiarySaved' => 'handleBeneficiarySaved'];
+
+    public function handleBeneficiarySaved()
+    {
+        $this->showRegistration = false; // يغلق المودال
+        $this->dispatch('swal', [
+            'title' => 'تم بنجاح',
+            'text' => 'تم حفظ البيانات بنجاح ✅',
+            'icon' => 'success',
+        ]);
+    }
 
     protected $rules = [
         'nationalId' => 'required|digits:9'
@@ -27,13 +41,13 @@ class BeneficiarySearch extends Component
     {
         $this->validate();
         $this->isLoading = true;
-        
+
         // محاكاة وقت التحميل للتصميم
         sleep(1);
-        
+
         $this->beneficiary = Beneficiary::where('national_id', $this->nationalId)->first();
         $this->isLoading = false;
-        
+
         if (!$this->beneficiary) {
             $this->showRegistration = true;
         }
@@ -75,8 +89,7 @@ class BeneficiarySearch extends Component
     public function render()
     {
         $stats = $this->getStats();
-        
-        return view('livewire.beneficiary-search', compact('stats')); 
-    }
 
+        return view('livewire.beneficiary-search', compact('stats'));
+    }
 }

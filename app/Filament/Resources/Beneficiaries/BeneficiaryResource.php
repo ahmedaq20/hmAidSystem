@@ -51,16 +51,19 @@ class BeneficiaryResource extends Resource
                             ->label('رقم الهوية')
                             ->required()
                             ->unique(ignoreRecord: true)
-                            ->maxLength(9),
+                            ->maxLength(9)
+                             ->columnSpanFull(),
 
                         Forms\Components\TextInput::make('full_name')
                             ->label('الاسم الرباعي')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                             ->columnSpanFull(),
 
                         Forms\Components\TextInput::make('phone_number')
                             ->label('رقم الهاتف')
                             ->required()
+                             ->columnSpanFull()
                             ->tel(),
                     ])->columns(3),
 

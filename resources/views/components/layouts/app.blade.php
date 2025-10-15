@@ -18,15 +18,15 @@
     </div>
 
     @livewireScripts
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         // إشعار SweetAlert من Livewire
         window.addEventListener('swal', (event) => {
             Swal.fire({
-                title: event.detail.title,
-                text: event.detail.text,
-                icon: event.detail.icon,
+                // title: "نجاح",
+                text: "تم حفظ البيانات بنجاح!",
+                icon: 'success',
                 confirmButtonText: 'حسناً'
             });
         });

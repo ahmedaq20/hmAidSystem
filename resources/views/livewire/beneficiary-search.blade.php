@@ -213,4 +213,42 @@
             </div>
         </div>
     @endif
+    <style>
+    /* دعم الاتجاه من اليمين لليسار */
+    .swal2-rtl {
+        direction: rtl;
+        text-align: right;
+        font-family: "Tajawal", sans-serif;
+    }
+</style>
+
 </div>
+
+
+{{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('livewire:load', function () {
+        Livewire.on('swal', function (data) {
+            Swal.fire({
+                title: data.title || 'إشعار',
+                text: data.text || '',
+                icon: data.icon || 'info',
+                confirmButtonText: 'حسناً',
+                confirmButtonColor: '#3085d6',
+                showCloseButton: true,
+                customClass: {
+                    popup: 'swal2-rtl'
+                }
+            });
+
+//             Swal.fire({
+//   title: "Good job!",
+//   text: "You clicked the button!",
+//   icon: "success"
+// });
+        });
+    });
+</script> --}}
+
+
+
