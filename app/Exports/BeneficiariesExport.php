@@ -1,4 +1,9 @@
-<?php
+BeneficiaryResource fixes:
+- Fix navigationIcon type to BackedEnum|string|null
+- Correct table filters type hints to Eloquent\Builder
+- Update BulkAction export to use Excel::download()
+- Update BeneficiariesExport with WithHeadings and WithMapping
+- Fix table columns labels to display proper Arabic headings<?php
 
 namespace App\Exports;
 
@@ -61,11 +66,6 @@ class BeneficiariesExport implements FromCollection, WithHeadings, WithMapping
             'new' => 'جديد',
             'pending' => 'قيد المراجعة',
             'approved' => 'معتمد',
-            default => $status,
-        };
-    }
-}
-           'approved' => 'معتمد',
             default => $status,
         };
     }
