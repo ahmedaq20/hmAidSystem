@@ -1,22 +1,19 @@
-BeneficiaryResource fixes:
-- Fix navigationIcon type to BackedEnum|string|null
-- Correct table filters type hints to Eloquent\Builder
-- Update BulkAction export to use Excel::download()
-- Update BeneficiariesExport with WithHeadings and WithMapping
-- Fix table columns labels to display proper Arabic headings<?php
+<?php
 
 namespace App\Exports;
 
 use App\Models\Beneficiary;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
+use
+    Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class BeneficiariesExport implements FromCollection, WithHeadings, WithMapping
+class BeneficiariesExport
+implements FromCollection, WithHeadings, WithMapping
 {
     protected $beneficiaries;
-
-    public function __construct($beneficiaries)
+    public function
+    __construct($beneficiaries)
     {
         $this->beneficiaries = $beneficiaries;
     }
