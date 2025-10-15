@@ -4,8 +4,10 @@ namespace App\Exports;
 
 use App\Models\Beneficiary;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class BeneficiariesExport implements FromCollection
+class BeneficiariesExport implements FromCollection, WithHeadings, WithMapping
 {
     protected $beneficiaries;
 
@@ -19,6 +21,7 @@ class BeneficiariesExport implements FromCollection
         return $this->beneficiaries;
     }
 
+    // عناوين الأعمدة
     public function headings(): array
     {
         return [
@@ -35,6 +38,7 @@ class BeneficiariesExport implements FromCollection
         ];
     }
 
+    // كيفية تحويل كل سجل إلى صف في الإكسل
     public function map($beneficiary): array
     {
         return [
@@ -57,6 +61,11 @@ class BeneficiariesExport implements FromCollection
             'new' => 'جديد',
             'pending' => 'قيد المراجعة',
             'approved' => 'معتمد',
+            default => $status,
+        };
+    }
+}
+           'approved' => 'معتمد',
             default => $status,
         };
     }

@@ -5,7 +5,7 @@
         <div class="flex justify-center mb-8">
             <div class="bg-white dark-bg-gray-800 rounded-full p-6 shadow-lg transition-all">
                 <div class="w-40 h-40 bg-blue-100 dark-bg-blue-900 rounded-full flex items-center justify-center transition-all">
-                    <span class="text-blue-600 dark-text-blue-300 text-xl font-bold transition-all">شعار المؤسسة</span>
+                    <img src="{{asset('image/hmlogo.png')}}" alt="Logo">
                 </div>
             </div>
         </div>
@@ -21,15 +21,15 @@
         <!-- مربع الاستعلام -->
         <div class="max-w-2xl mx-auto bg-white dark-bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 transition-all">
             <h2 class="text-xl font-semibold text-gray-800 dark-text-white mb-6 text-center transition-all">استعلام عن حالة المستفيد</h2>
-            
+
             <form wire:submit.prevent="search" class="space-y-6">
                 <div>
                     <label for="nationalId" class="block text-gray-700 dark-text-gray-300 mb-2 text-right transition-all">رقم الهوية الوطنية</label>
-                    <input 
-                        type="text" 
-                        id="nationalId" 
+                    <input
+                        type="text"
+                        id="nationalId"
                         wire:model="nationalId"
-                        placeholder="أدخل رقم الهوية الوطنية" 
+                        placeholder="أدخل رقم الهوية الوطنية"
                         class="w-full px-4 py-3 border border-gray-300 dark-border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark-focus-ring-blue-600 focus:border-blue-500 dark-bg-gray-700 dark-text-white transition-all text-right placeholder:text-right"
                         required
                         dir="rtl"
@@ -40,9 +40,9 @@
                     @enderror
                     <p class="text-sm text-gray-500 dark-text-gray-400 mt-2 transition-all text-right">يرجى إدخال رقم الهوية الوطنية لرب الأسرة (الأب) أو الأم في حالة الأرملة</p>
                 </div>
-                
-                <button 
-                    type="submit" 
+
+                <button
+                    type="submit"
                     class="w-full bg-blue-600 hover:bg-blue-700 dark-bg-blue-700 dark-hover-bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center"
                     wire:loading.attr="disabled"
                     wire:target="search"
@@ -62,7 +62,7 @@
                     </span>
                 </button>
             </form>
-            
+
             <!-- عرض بيانات المستفيد -->
             @if($beneficiary && !$showRegistration)
                 <div class="mt-6 p-4 bg-green-50 dark-bg-green-900 rounded-lg border border-green-200 dark-border-gray-700 transition-all">
@@ -107,7 +107,7 @@
                             </span>
                         </div>
                     </div>
-                    
+
                     <button
                         wire:click="showUpdateForm"
                         class="mt-4 w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
@@ -116,7 +116,7 @@
                     </button>
                 </div>
             @endif
-            
+
             <!-- معلومات إضافية -->
             <div class="mt-8 pt-6 border-t border-gray-200 dark-border-gray-700 transition-all">
                 <h3 class="text-lg font-medium text-gray-800 dark-text-white mb-4 transition-all text-right">معلومات مهمة:</h3>
@@ -154,7 +154,7 @@
                 <h3 class="text-lg font-semibold text-gray-800 dark-text-white mb-2 transition-all">التسجيل الأولي</h3>
                 <p class="text-gray-600 dark-text-gray-300 transition-all">للتسجيل لأول مرة في النظام والحصول على المساعدات</p>
             </div>
-            
+
             <div class="bg-white dark-bg-gray-800 rounded-lg shadow p-6 text-center transition-all hover:shadow-lg">
                 <div class="w-16 h-16 bg-green-100 dark-bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600 dark-text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -164,7 +164,7 @@
                 <h3 class="text-lg font-semibold text-gray-800 dark-text-white mb-2 transition-all">تحديث البيانات</h3>
                 <p class="text-gray-600 dark-text-gray-300 transition-all">لتحديث بياناتك في حالة حدوث أي تغيير في وضع الأسرة</p>
             </div>
-            
+
             <div class="bg-white dark-bg-gray-800 rounded-lg shadow p-6 text-center transition-all hover:shadow-lg">
                 <div class="w-16 h-16 bg-purple-100 dark-bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600 dark-text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -177,7 +177,7 @@
         </div>
 
         <!-- إحصائيات -->
-        <div class="mt-16 bg-white dark-bg-gray-800 rounded-xl shadow-lg p-8 max-w-4xl mx-auto transition-all">
+        {{-- <div class="mt-16 bg-white dark-bg-gray-800 rounded-xl shadow-lg p-8 max-w-4xl mx-auto transition-all">
             <h2 class="text-2xl font-bold text-gray-800 dark-text-white mb-8 text-center transition-all">إحصائيات النظام</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 <div class="bg-blue-50 dark-bg-blue-900 rounded-lg p-4 transition-all hover:shadow-md">
@@ -197,7 +197,7 @@
                     <div class="text-gray-600 dark-text-gray-300">طلب جديد</div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- تذييل الصفحة -->

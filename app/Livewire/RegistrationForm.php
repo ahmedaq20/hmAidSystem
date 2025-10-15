@@ -7,44 +7,55 @@ use App\Models\Beneficiary;
 
 class RegistrationForm extends Component
 {
-    public $national_id;
-    public $full_name;
-    public $phone_number;
-    public $family_members = 1;
-    public $address;
-    public $martyrs_count = 0;
-    public $injured_count = 0;
-    public $disabled_count = 0;
+    public $nationalId = '';
+    public $beneficiary = null;
+    public $showRegistration = false;
 
     protected $rules = [
-        'national_id' => 'required|unique:beneficiaries,national_id|max:20',
-        'full_name' => 'required|string|max:255',
-        'phone_number' => 'nullable|string|max:30',
-        'family_members' => 'required|integer|min:1',
-        'address' => 'nullable|string|max:255',
-        'martyrs_count' => 'nullable|integer|min:0',
-        'injured_count' => 'nullable|integer|min:0',
-        'disabled_count' => 'nullable|integer|min:0',
+        'nationalId' => 'required|digits:9'
     ];
 
-    public function mount()
+    protected $messages = [
+        'nationalId.required' => 'يرجى إدخال رقم الهوية',
+        'nationalId.digits' => 'رقم الهوية يجب أن يكون 9 أرقام'
+    ];
+
+    public function search()
     {
-        if(request()->has('id')) $this->national_id = request('id');
+        $this->validate();
+        
+        $this->beneficiary = Beneficiary::where('national_id', $this->nationalId)->first();
+        
+        if (!$this->beneficiary) {
+            $this->showRegistration = true;
+        }
     }
 
-    public function submit()
+    public function showUpdateForm()
     {
-        $data = $this->validate();
-        Beneficiary::create(array_merge($data, ['status' => 'new']));
+        $this->showRegistration = true;
+    }
 
-        // يمكن إرسال إشعار للإدارة هنا
+    public function hideRegistrationForm()
+    {
+        $this->showRegistration = false;
+        $this->beneficiary = null;
+        $this->nationalId = '';
+    }
 
-        session()->flash('success', 'تم إنشاء الطلب بنجاح.');
-        return redirect()->route('inquiry');
+    public function getStatusText($status)
+    {
+        return match ($status) {
+            'new' => 'جديد',
+            'pending' => 'قيد المراجعة',
+            'approved' => 'معتمد',
+            default => $status,
+        };
     }
 
     public function render()
     {
-        return view('livewire.registration-form');
+        return view('livewire.beneficiary-search')
+            ->layout('layouts.app');
     }
 }

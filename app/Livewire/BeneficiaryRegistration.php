@@ -24,37 +24,25 @@ class BeneficiaryRegistration extends Component
     {
         if ($beneficiary) {
             $this->beneficiary = $beneficiary;
-            $this->national_id = $beneficiary->national_id;
-            $this->full_name = $beneficiary->full_name;
-            $this->phone_number = $beneficiary->phone_number;
-            $this->family_members = $beneficiary->family_members;
-            $this->address = $beneficiary->address;
-            $this->martyrs_count = $beneficiary->martyrs_count;
-            $this->injured_count = $beneficiary->injured_count;
-            $this->disabled_count = $beneficiary->disabled_count;
+            $this->fill($beneficiary->only([
+                'national_id', 'full_name', 'phone_number', 'family_members',
+                'address', 'martyrs_count', 'injured_count', 'disabled_count'
+            ]));
         }
     }
 
     protected function rules()
     {
-        $rules = [
-            'national_id' => 'required|digits:9',
+        return [
+            'national_id' => 'required|digits:9|unique:beneficiaries,national_id,' . ($this->beneficiary->id ?? 'NULL'),
             'full_name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
             'family_members' => 'required|integer|min:1',
             'address' => 'required|string|max:500',
-            'martyrs_count' => 'integer|min:0',
-            'injured_count' => 'integer|min:0',
-            'disabled_count' => 'integer|min:0',
+            'martyrs_count' => 'nullable|integer|min:0',
+            'injured_count' => 'nullable|integer|min:0',
+            'disabled_count' => 'nullable|integer|min:0',
         ];
-
-        if ($this->beneficiary) {
-            $rules['national_id'] = 'required|digits:9|unique:beneficiaries,national_id,' . $this->beneficiary->id;
-        } else {
-            $rules['national_id'] = 'required|digits:9|unique:beneficiaries,national_id';
-        }
-
-        return $rules;
     }
 
     protected $messages = [
@@ -72,33 +60,42 @@ class BeneficiaryRegistration extends Component
     {
         $this->validate();
 
+        $data = [
+            'national_id' => $this->national_id,
+            'full_name' => $this->full_name,
+            'phone_number' => $this->phone_number,
+            'family_members' => $this->family_members,
+            'address' => $this->address,
+            'martyrs_count' => $this->martyrs_count,
+            'injured_count' => $this->injured_count,
+            'disabled_count' => $this->disabled_count,
+            'status' => 'pending',
+            // 'status' => $this->beneficiary ? 'pending' : 'new',
+        ];
+
         try {
-            DB::transaction(function () {
-                $data = [
-                    'national_id' => $this->national_id,
-                    'full_name' => $this->full_name,
-                    'phone_number' => $this->phone_number,
-                    'family_members' => $this->family_members,
-                    'address' => $this->address,
-                    'martyrs_count' => $this->martyrs_count,
-                    'injured_count' => $this->injured_count,
-                    'disabled_count' => $this->disabled_count,
-                    'status' => $this->beneficiary ? 'pending' : 'new',
-                ];
+            if ($this->beneficiary) {
+                $this->beneficiary->update($data);
+                $message = 'تم تحديث البيانات بنجاح ✅ وسيتم مراجعتها قريباً.';
+            } else {
+                Beneficiary::create($data);
+                $message = 'تم تسجيل المستفيد بنجاح ✅ بانتظار المراجعة.';
+            }
 
-                if ($this->beneficiary) {
-                    $this->beneficiary->update($data);
-                    $message = 'تم تحديث البيانات بنجاح وانتظار المراجعة';
-                } else {
-                    Beneficiary::create($data);
-                    $message = 'تم التسجيل بنجاح وانتظار المراجعة';
-                }
+            $this->dispatch('swal', [
+                'title' => 'نجاح العملية',
+                'text' => $message,
+                'icon' => 'success',
+            ]);
 
-                session()->flash('message', $message);
-                $this->dispatch('registration-completed');
-            });
-        } catch (\Exception $e) {
-            session()->flash('error', 'حدث خطأ أثناء حفظ البيانات');
+            $this->reset(['national_id', 'full_name', 'phone_number', 'family_members', 'address', 'martyrs_count', 'injured_count', 'disabled_count']);
+
+        } catch (\Throwable $e) {
+            $this->dispatch('swal', [
+                'title' => 'خطأ!',
+                'text' => 'حدث خطأ أثناء حفظ البيانات. الرجاء المحاولة لاحقاً.',
+                'icon' => 'error',
+            ]);
         }
     }
 
@@ -106,5 +103,4 @@ class BeneficiaryRegistration extends Component
     {
         return view('livewire.beneficiary-registration');
     }
-
 }

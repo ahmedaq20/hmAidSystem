@@ -27,13 +27,13 @@ class BeneficiarySearch extends Component
     {
         $this->validate();
         $this->isLoading = true;
-
+        
         // محاكاة وقت التحميل للتصميم
         sleep(1);
-
+        
         $this->beneficiary = Beneficiary::where('national_id', $this->nationalId)->first();
         $this->isLoading = false;
-
+        
         if (!$this->beneficiary) {
             $this->showRegistration = true;
         }
@@ -75,8 +75,8 @@ class BeneficiarySearch extends Component
     public function render()
     {
         $stats = $this->getStats();
-
-        return view('livewire.beneficiary-search', compact('stats')); // سنستخدم layout منفصل
+        
+        return view('livewire.beneficiary-search', compact('stats')); 
     }
 
 }
