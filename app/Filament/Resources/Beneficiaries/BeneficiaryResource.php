@@ -234,6 +234,13 @@ Filter::make('has_disabled')
             //
         ];
     }
+    public static function getWidgets(): array
+{
+    return [
+        // \App\Filament\Widgets\BeneficiaryStats::class,
+    ];
+}
+
 
     public static function getPages(): array
     {
