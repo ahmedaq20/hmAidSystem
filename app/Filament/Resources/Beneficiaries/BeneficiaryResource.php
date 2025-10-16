@@ -113,7 +113,7 @@ class BeneficiaryResource extends Resource
                             ])
                             ->required(),
 
-                        Forms\Components\Textarea::make('admin_notes')
+                        Forms\Components\Textarea::make('notes')
                             ->label('ملاحظات الإدارة')
                             ->columnSpanFull(),
                     ]),
