@@ -47,12 +47,13 @@
                     wire:loading.attr="disabled"
                     wire:target="search"
                 >
-                    <span wire:loading.remove wire:target="search">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                        </svg>
-                        استعلم عن بياناتي
-                    </span>
+                   <span wire:loading.remove wire:target="search" class="inline-flex items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+    </svg>
+    استعلم عن بياناتي
+</span>
+
                     <span wire:loading wire:target="search">
                         <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -225,30 +226,6 @@
 </div>
 
 
-{{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.addEventListener('livewire:load', function () {
-        Livewire.on('swal', function (data) {
-            Swal.fire({
-                title: data.title || 'إشعار',
-                text: data.text || '',
-                icon: data.icon || 'info',
-                confirmButtonText: 'حسناً',
-                confirmButtonColor: '#3085d6',
-                showCloseButton: true,
-                customClass: {
-                    popup: 'swal2-rtl'
-                }
-            });
-
-//             Swal.fire({
-//   title: "Good job!",
-//   text: "You clicked the button!",
-//   icon: "success"
-// });
-        });
-    });
-</script> --}}
 
 
 

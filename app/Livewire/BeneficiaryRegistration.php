@@ -102,6 +102,24 @@ class BeneficiaryRegistration extends Component
         }
     }
 
+    public function cancel()
+    {
+        $this->reset([
+            'national_id',
+            'full_name',
+            'phone_number',
+            'family_members',
+            'address',
+            'martyrs_count',
+            'injured_count',
+            'disabled_count',
+        ]);
+
+        // إذا أردت إخفاء النموذج بعد الإلغاء
+        $this->dispatch('hideRegistrationForm'); // أو أي طريقة عندك لإغلاق المودال
+    }
+
+
     public function render()
     {
         return view('livewire.beneficiary-registration');

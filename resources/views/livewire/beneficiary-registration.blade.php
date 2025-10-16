@@ -74,7 +74,7 @@
                     class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">
                     {{ $beneficiary ? 'تحديث البيانات' : 'تسجيل' }}
                 </button>
-                <button type="button" wire:click="$reset"
+                <button type="button" wire:click="cancel"
                     class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition">
                     إلغاء
                 </button>

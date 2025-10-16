@@ -15,17 +15,19 @@ class BeneficiarySearch extends Component
     public $isLoading = false;
 
 
-
-    protected $listeners = ['beneficiarySaved' => 'handleBeneficiarySaved'];
+    protected $listeners = [
+        'beneficiarySaved' => 'handleBeneficiarySaved',
+        'hideRegistrationForm' => 'hideRegistrationForm',
+    ];
 
     public function handleBeneficiarySaved()
     {
         $this->showRegistration = false; // يغلق المودال
-        $this->dispatch('swal', [
-            'title' => 'تم بنجاح',
-            'text' => 'تم حفظ البيانات بنجاح ✅',
-            'icon' => 'success',
-        ]);
+        // $this->dispatch('swal', [
+        //     'title' => 'تم بنجاح',
+        //     'text' => 'تم حفظ البيانات بنجاح ✅',
+        //     'icon' => 'success',
+        // ]);
     }
 
     protected $rules = [
