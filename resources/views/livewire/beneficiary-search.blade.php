@@ -65,58 +65,79 @@
             </form>
 
             <!-- عرض بيانات المستفيد -->
-            @if($beneficiary && !$showRegistration)
-                <div class="mt-6 p-4 bg-green-50 dark-bg-green-900 rounded-lg border border-green-200 dark-border-gray-700 transition-all">
-                    <h3 class="text-lg font-semibold text-green-800 dark-text-green-300 mb-4 text-center">✅ بيانات المستفيد</h3>
-                    <div class="space-y-3 text-sm">
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700 dark-text-gray-300">رقم الهوية:</span>
-                            <span class="text-gray-900 dark-text-white">{{ $beneficiary->national_id }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700 dark-text-gray-300">الاسم الكامل:</span>
-                            <span class="text-gray-900 dark-text-white">{{ $beneficiary->full_name }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700 dark-text-gray-300">رقم الهاتف:</span>
-                            <span class="text-gray-900 dark-text-white">{{ $beneficiary->phone_number }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700 dark-text-gray-300">عدد أفراد الأسرة:</span>
-                            <span class="text-gray-900 dark-text-white">{{ $beneficiary->family_members }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700 dark-text-gray-300">مكان السكن:</span>
-                            <span class="text-gray-900 dark-text-white text-left">{{ $beneficiary->address }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700 dark-text-gray-300">عدد الشهداء:</span>
-                            <span class="text-gray-900 dark-text-white">{{ $beneficiary->martyrs_count }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700 dark-text-gray-300">عدد الجرحى:</span>
-                            <span class="text-gray-900 dark-text-white">{{ $beneficiary->injured_count }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700 dark-text-gray-300">عدد ذوي الإعاقة:</span>
-                            <span class="text-gray-900 dark-text-white">{{ $beneficiary->disabled_count }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700 dark-text-gray-300">الحالة:</span>
-                            <span class="{{ $beneficiary->status === 'approved' ? 'text-green-600 dark-text-green-400 font-bold' : 'text-yellow-600 dark-text-yellow-400' }}">
-                                {{ $this->getStatusText($beneficiary->status) }}
-                            </span>
-                        </div>
-                    </div>
+  @if($beneficiary && !$showRegistration)
+<div class="mt-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 md:p-8 transition-all">
+    <h3 class="text-xl font-semibold text-green-700 dark:text-green-400 mb-6 text-center">
+        ✅ بيانات المستفيد
+    </h3>
 
-                    <button
-                        wire:click="showUpdateForm"
-                        class="mt-4 w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
-                    >
-                        ✏️ تحديث المعلومات
-                    </button>
-                </div>
-            @endif
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5 text-sm leading-relaxed">
+        <div class="flex justify-between md:justify-start md:space-x-4">
+            <span class="font-medium text-gray-700 dark:text-gray-300 ml-1">رقم الهوية:</span>
+            <span class="text-gray-900 dark:text-white">{{ $beneficiary->national_id }}</span>
+        </div>
+
+        <div class="flex justify-between md:justify-start md:space-x-4">
+            <span class="font-medium text-gray-700 dark:text-gray-300 ml-1">الاسم الكامل:</span>
+            <span class="text-gray-900 dark:text-white">{{ $beneficiary->full_name }}</span>
+        </div>
+
+        <div class="flex justify-between md:justify-start md:space-x-4">
+            <span class="font-medium text-gray-700 dark:text-gray-300 ml-1">رقم الهاتف:</span>
+            <span class="text-gray-900 dark:text-white">{{ $beneficiary->phone_number }}</span>
+        </div>
+
+        <div class="flex justify-between md:justify-start md:space-x-4">
+            <span class="font-medium text-gray-700 dark:text-gray-300 ml-1">عدد أفراد الأسرة:</span>
+            <span class="text-gray-900 dark:text-white">{{ $beneficiary->family_members }}</span>
+        </div>
+
+        <div class="flex justify-between md:justify-start md:space-x-4 md:col-span-2">
+            <span class="font-medium text-gray-700 dark:text-gray-300 ml-1">مكان السكن:</span>
+            <span class="text-gray-900 dark:text-white">{{ $beneficiary->address }}</span>
+        </div>
+
+        <div class="flex justify-between md:justify-start md:space-x-4">
+            <span class="font-medium text-gray-700 dark:text-gray-300 ml-1">عدد الشهداء:</span>
+            <span class="text-gray-900 dark:text-white">{{ $beneficiary->martyrs_count }}</span>
+        </div>
+
+        <div class="flex justify-between md:justify-start md:space-x-4">
+            <span class="font-medium text-gray-700 dark:text-gray-300 ml-1">عدد الجرحى:</span>
+            <span class="text-gray-900 dark:text-white">{{ $beneficiary->injured_count }}</span>
+        </div>
+
+        <div class="flex justify-between md:justify-start md:space-x-4">
+            <span class="font-medium text-gray-700 dark:text-gray-300 ml-1">عدد ذوي الإعاقة:</span>
+            <span class="text-gray-900 dark:text-white">{{ $beneficiary->disabled_count }}</span>
+        </div>
+
+        <!-- ✅ الملاحظات -->
+        <div class="md:col-span-2 mt-2">
+            <span class="font-medium text-gray-700 dark:text-gray-300 block mb-1">ملاحظات:</span>
+            <div class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 text-gray-800 dark:text-gray-100 max-h-48 overflow-y-auto leading-relaxed">
+                {{ $beneficiary->notes ?? 'لا يوجد' }}
+            </div>
+        </div>
+
+        <div class="flex justify-between md:justify-start md:space-x-4 md:col-span-2">
+            <span class="font-medium text-gray-700 dark:text-gray-300 ml-1">الحالة:</span>
+            <span
+                class="{{ $beneficiary->status === 'approved' ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-yellow-600 dark:text-yellow-400 font-semibold' }}">
+                {{ $this->getStatusText($beneficiary->status) }}
+            </span>
+        </div>
+    </div>
+
+    <button
+        wire:click="showUpdateForm"
+        class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 shadow-sm"
+    >
+        ✏️ تحديث المعلومات
+    </button>
+</div>
+@endif
+
 
             <!-- معلومات إضافية -->
             <div class="mt-8 pt-6 border-t border-gray-200 dark-border-gray-700 transition-all">

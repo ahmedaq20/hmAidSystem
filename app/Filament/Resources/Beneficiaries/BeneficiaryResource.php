@@ -1,7 +1,9 @@
 <?php
+// app/Filament/Resources/Beneficiaries/BeneficiaryResource.php
 
 namespace App\Filament\Resources\Beneficiaries;
 
+use BackedEnum;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -13,24 +15,22 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
+use Illuminate\Support\Facades\Log;
+use App\Exports\BeneficiariesExport;
+use App\Imports\BeneficiariesImport;
+use Maatwebsite\Excel\Facades\Excel;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Forms\Components\Builder;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Collection;
-use Symfony\Component\HttpFoundation\StreamedResponse; // Needed for export
-use App\Exports\BeneficiariesExport;
-use BackedEnum;
-use Maatwebsite\Excel\Facades\Excel;
-
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class BeneficiaryResource extends Resource
 {
     protected static ?string $model = Beneficiary::class;
-
-// protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?string $navigationLabel = 'المستفيدين';
 
@@ -40,10 +40,9 @@ class BeneficiaryResource extends Resource
 
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-user-group';
 
-
     public static function form(Schema $schema): Schema
     {
-        return $schema // Use the $schema variable
+        return $schema
             ->schema([
                 Section::make('المعلومات الأساسية')
                     ->schema([
@@ -52,18 +51,18 @@ class BeneficiaryResource extends Resource
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(9)
-                             ->columnSpanFull(),
+                            ->columnSpanFull(),
 
                         Forms\Components\TextInput::make('full_name')
                             ->label('الاسم الرباعي')
                             ->required()
                             ->maxLength(255)
-                             ->columnSpanFull(),
+                            ->columnSpanFull(),
 
                         Forms\Components\TextInput::make('phone_number')
                             ->label('رقم الهاتف')
                             ->required()
-                             ->columnSpanFull()
+                            ->columnSpanFull()
                             ->tel(),
                     ])->columns(3),
 
@@ -181,17 +180,16 @@ class BeneficiaryResource extends Resource
                     ]),
 
                 Filter::make('has_martyrs')
-    ->label('يحتوي على شهداء')
-    ->query(fn(EloquentBuilder $query): EloquentBuilder => $query->where('martyrs_count', '>', 0)),
+                    ->label('يحتوي على شهداء')
+                    ->query(fn(EloquentBuilder $query): EloquentBuilder => $query->where('martyrs_count', '>', 0)),
 
-Filter::make('has_injured')
-    ->label('يحتوي على جرحى')
-    ->query(fn(EloquentBuilder $query): EloquentBuilder => $query->where('injured_count', '>', 0)),
+                Filter::make('has_injured')
+                    ->label('يحتوي على جرحى')
+                    ->query(fn(EloquentBuilder $query): EloquentBuilder => $query->where('injured_count', '>', 0)),
 
-Filter::make('has_disabled')
-    ->label('يحتوي على ذوي إعاقة')
-    ->query(fn(EloquentBuilder $query): EloquentBuilder => $query->where('disabled_count', '>', 0)),
-
+                Filter::make('has_disabled')
+                    ->label('يحتوي على ذوي إعاقة')
+                    ->query(fn(EloquentBuilder $query): EloquentBuilder => $query->where('disabled_count', '>', 0)),
             ])
             ->actions([
                 EditAction::make(),
@@ -205,7 +203,7 @@ Filter::make('has_disabled')
                     })
                     ->visible(fn(Beneficiary $record) => $record->status !== 'approved'),
 
-                Action::make('reject') // Note: this sets status to 'pending', not a rejected state.
+                Action::make('reject')
                     ->label('رفض')
                     ->color('danger')
                     ->icon('heroicon-o-x-mark')
@@ -218,13 +216,84 @@ Filter::make('has_disabled')
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     BulkAction::make('export')
-                    ->label('تصدير إلى Excel')
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->action(function (Collection $records) {
-                        return Excel::download(new BeneficiariesExport($records), 'beneficiaries-' . date('Y-m-d') . '.xlsx');
-                    }),
-
+                        ->label('تصدير إلى Excel')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function (Collection $records) {
+                            return Excel::download(new BeneficiariesExport($records), 'beneficiaries-' . date('Y-m-d') . '.xlsx');
+                        }),
                 ]),
+            ])
+            ->headerActions([
+                // زر الاستيراد
+                // في BeneficiaryResource - تحديث زر الاستيراد
+                Action::make('import')
+                    ->label('استيراد من Excel')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('success')
+                    ->modalHeading('استيراد بيانات المستفيدين')
+                    ->action(function (array $data) {
+                        try {
+                            Log::info('Starting import process...');
+
+                            $import = new BeneficiariesImport;
+
+                            Excel::import($import, $data['file']);
+
+                            $importedCount = $import->getImportedCount();
+                            $errors = $import->getErrors();
+
+                            Log::info("Import completed. Imported: {$importedCount}, Errors: " . count($errors));
+
+                            if (!empty($errors)) {
+                                $errorMessage = "تم استيراد {$importedCount} سجل.<br><br><strong>الأخطاء:</strong><br>" . implode('<br>', array_slice($errors, 0, 5));
+                                if (count($errors) > 5) {
+                                    $errorMessage .= "<br>...و " . (count($errors) - 5) . " خطأ آخر";
+                                }
+
+                                Notification::make()
+                                    ->title('تم الاستيراد مع بعض الأخطاء')
+                                    ->body($errorMessage)
+                                    ->warning()
+                                    ->persistent()
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('تم الاستيراد بنجاح')
+                                    ->body("تم استيراد {$importedCount} سجل بنجاح")
+                                    ->success()
+                                    ->send();
+                            }
+                        } catch (\Exception $e) {
+                            Log::error('Import error: ' . $e->getMessage());
+
+                            Notification::make()
+                                ->title('خطأ في الاستيراد')
+                                ->body('حدث خطأ أثناء الاستيراد: ' . $e->getMessage())
+                                ->danger()
+                                ->persistent()
+                                ->send();
+                        }
+                    })
+                    ->form([
+                        FileUpload::make('file')
+                            ->label('ملف Excel')
+                            ->required()
+                            ->acceptedFileTypes([
+                                'application/vnd.ms-excel',
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                'text/csv'
+                            ])
+                            ->maxSize(10240)
+                            ->directory('imports')
+                            ->helperText('
+                <strong>ملاحظة:</strong> يجب أن تكون الأعمدة مرتبة بالترتيب المذكور أعلاه.
+                <br>السطر الأول يمكن أن يحتوي على العناوين أو يبدأ بالبيانات مباشرة.
+            ')
+                            ->hint('يدعم: Excel (.xlsx, .xls) و CSV (.csv)')
+                    ])
+                    ->modalSubmitActionLabel('بدء الاستيراد')
+                    ->modalCancelActionLabel('إلغاء')
+
             ]);
     }
 
@@ -234,13 +303,13 @@ Filter::make('has_disabled')
             //
         ];
     }
-    public static function getWidgets(): array
-{
-    return [
-        // \App\Filament\Widgets\BeneficiaryStats::class,
-    ];
-}
 
+    public static function getWidgets(): array
+    {
+        return [
+            // \App\Filament\Widgets\BeneficiaryStats::class,
+        ];
+    }
 
     public static function getPages(): array
     {
