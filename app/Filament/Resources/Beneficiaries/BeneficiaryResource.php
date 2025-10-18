@@ -285,10 +285,7 @@ class BeneficiaryResource extends Resource
                             ])
                             ->maxSize(10240)
                             ->directory('imports')
-                            ->helperText('
-                <strong>ملاحظة:</strong> يجب أن تكون الأعمدة مرتبة بالترتيب المذكور أعلاه.
-                <br>السطر الأول يمكن أن يحتوي على العناوين أو يبدأ بالبيانات مباشرة.
-            ')
+                             ->helperText(view('filament.helpers.import-instructions'))
                             ->hint('يدعم: Excel (.xlsx, .xls) و CSV (.csv)')
                     ])
                     ->modalSubmitActionLabel('بدء الاستيراد')
